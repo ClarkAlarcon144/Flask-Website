@@ -160,7 +160,16 @@ def acircle():
     result = None
     if request.method == 'POST':
         radius = request.form.get('radius', '')
-        result = int(radius)*3.14*int(radius)
+
+        try:
+            radius = float(radius)
+
+            if radius >= 0:
+                result = radius*radius*3.14
+
+        except ValueError:
+            pass
+
     return render_template('circle.html', result=result)
 
 @app.route('/works/area/triangle', methods=['GET', 'POST'])
@@ -169,7 +178,17 @@ def atriangle():
     if request.method == 'POST':
         base = request.form.get('base', '')
         height = request.form.get('height', '')
-        result = int(base)*int(height)/2
+
+        try:
+            base = float(base)
+            height = float(height)
+
+            if base >= 0 and height >=0:
+                result = base*height/2
+
+        except ValueError:
+            pass
+
     return render_template('triangle.html', result=result)
 
 
@@ -195,7 +214,7 @@ def alinkedlist():
                 linkedlist.insert_at_end(value)
 
         elif action == 'Insert After':
-            if value and position.isnumeric():
+            if value and position:
                 linkedlist.insert_after(position, value)
 
         elif action == 'Remove Beginning':
