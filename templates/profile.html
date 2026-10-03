@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    .profile {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .text {
+        flex: 1;
+    }
+
+    .image {
+        flex-shrink: 0;
+    }
+
+    .image img {
+        width: 200px;
+        height: auto;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="profile">
+    <div class="text">
+        <h1>Clark J. Alarcon</h1>
+        <p>
+            I am Clark J. Alarcon, an 18 year old student studying in PUP Sta. Mesa.<br>
+            I am studying BS in Computer Engineering, section 2-3.
+        </p>
+    </div>
+    
+    <div class="image">
+        <img src="/static/images/clark pic 1.jpg">
+
+    </div>
+
+</div>
+{% endblock %}

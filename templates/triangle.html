@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <h2>Area of Triangle</h2>
+
+    <form action="/works/area/triangle" method="post">
+        <div>
+            <label for="base">Enter base of triangle:</label>
+            <input type="text" id="base" name="base">
+        </div>
+        
+        <div>
+            <label for="height">Enter perpendicular height:</label>
+            <input type="text" id="height" name="height">
+        </div>
+        
+        <input type="submit" value="Compute">
+    </form>
+
+    {% if result is not none%}
+    <p>Area of the triangle: {{ result }}</p>
+    {% endif %}
+
+{% endblock %}
