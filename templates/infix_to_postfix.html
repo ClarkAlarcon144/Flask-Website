@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/infix_to_postfix.css') }}">
+{% endblock %}
+
+{% block content %}
+    <h1>Infix to Postfix Converter</h1>
+
+    <div class="display">
+        <div class="left_frame">
+            <form method="POST">
+                <label for="expression">Enter an infix expression:</label>
+
+                <input
+                    type="text"
+                    id="expression"
+                    name="expression"
+                    value="{{ expression }}"
+                    placeholder="A + B * C"
+                    required
+                >
+
+                <input type="submit" value="Convert">
+            </form>
+
+            {% if result is not none and not error %}
+
+                <form method="POST">
+                    <div class="button-row">
+                        <button type="button" id="rewind">
+                            <<
+                        </button>
+
+                        <button type="button" id="step-back">
+                            <
+                        </button>
+
+                        <button type="button" id="play-pause">
+                            ▶ 
+                        </button>
+
+                        <button type="button" id="step-forward">
+                            >
+                        </button>
+
+                        <button type="button" id="fast-forward">
+                            >>
+                        </button>
+
+                    </div>
+                </form>
+
+            {% endif %}
+
+            {% if error %}
+                <div class="result">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <div class="result_frame">
+                {% if result is not none %}
+
+                <h2>Postfix Result</h2>
+
+                <div class="result">
+                    {{ result }}
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="visualizer">
+            <div class="current-token">
+                <h2>Current Token</h2>
+
+                <div id="value" class="node"></div>
+
+                <div id="instruction" class="instruction"></div>
+
+            </div>
+
+            <div class="stack-area">
+                <h2>Operator Stack</h2>
+                <div id="operators" class="stack"></div>
+            </div>
+
+            <div class="stack-area">
+                <h2>Output Stack</h2>
+                <div id="output" class="stack"></div>
+            </div>
+        </div>
+
+        <script id="event-data" type="application/json">
+            {{ events | tojson }}
+        </script>
+
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/infix_to_postfix.js') }}"></script>
+{% endblock %}

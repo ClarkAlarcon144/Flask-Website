@@ -1,42 +1,72 @@
 {% extends "base.html" %}
 
 {% block styles %}
-    .profile {
-        display: flex;
-        align-items: center;
-        gap: 30px;
-    }
-
-    .text {
-        flex: 1;
-    }
-
-    .image {
-        flex-shrink: 0;
-    }
-
-    .image img {
-        width: 200px;
-        height: auto;
-    }
-</style>
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
 {% endblock %}
 
+
 {% block content %}
-<div class="profile">
-    <div class="text">
-        <h1>Clark J. Alarcon</h1>
+
+<div class="profile-page">
+
+    <div class="profile">
+        <div class="basic-info">
+
+            <div class="text">
+                <h1>Clark J. Alarcon</h1>
+
+                <p>
+                    I am Clark J. Alarcon, a 19-year-old
+                    student studying at PUP Sta. Mesa.
+                    I am studying BS in Computer Engineering,
+                    section 2-3.
+                </p>
+            </div>
+
+            <div class="image">
+                <img src="{{ url_for('static', filename='images/clark pic 1.jpg') }}" alt="Clark J. Alarcon">
+            </div>
+
+        </div>
+    </div>
+
+    <div class="profile">
+        <h2>Hobbies & Interests</h2>
+
         <p>
-            I am Clark J. Alarcon, an 18 year old student studying in PUP Sta. Mesa.<br>
-            I am studying BS in Computer Engineering, section 2-3.
+            Yooooo hello!! Some of my hobbies include:<br>
+            - singing<br>
+            - going to anime conventions<br>
+            - reading webnovels<br>
+            - cosplaying<br>
+        </p>
+
+    </div>
+
+    <div class="profile">
+        <h2>Education</h2>
+
+        <p>
+            Polytechnic University of the Philippines
+        </p>
+
+        <p>
+            BS in Computer Engineering
         </p>
     </div>
-    
-    <div class="image">
-        <img src="/static/images/clark pic 1.jpg">
 
+    <div class="profile">
+        <h2>Completed Programming Projects</h2>
+
+        <p>
+            - tkinter address book<br>
+            - Real time morse-code converter<br>
+            - Linked List implementation program<br>
+            - Infix to Postfix program<br>
+        </p>
     </div>
 
 </div>
+
 {% endblock %}
+

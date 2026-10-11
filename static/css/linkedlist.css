@@ -1,0 +1,50 @@
+.ll-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 50px;
+}
+
+.controls {
+    flex: 1;
+}
+
+.linked-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 200px;
+}
+
+.node-box {
+    padding: 20px 30px;
+    background: #eee4ff;
+    border: 2px solid #8e6bbd;
+    border-radius: 10px;
+    font-weight: bold;
+    min-width: 100px;
+    text-align: center;
+}
+
+.arrow {
+    font-size: 30px;
+    color: #6f4b9b;
+}
+
+.insert-after {
+    display: flex;
+    gap: 12px;
+}
+
+.insert-after input[type="submit"] {
+    width: 50%;
+}
+
+.insert-after input[type="text"] {
+    width: 50%;
+}
+
+main {
+    max-width: 50%;
+}

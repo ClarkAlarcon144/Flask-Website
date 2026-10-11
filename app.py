@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request
+import re
 
 class Node:
     def __init__(self, data):
         self.data = data
         self.next = None
-
 
 class LinkedList:
     def __init__(self):
@@ -132,7 +132,49 @@ class LinkedList:
             return None
         else:
             return None
-        
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class Stack:
+    def __init__(self):
+        self.top = None
+
+    def push(self, data):
+        new_node = Node(data)
+        if self.top:
+            new_node.next = self.top
+        self.top = new_node
+
+
+    def pop(self):
+        if self.top is None:
+            return None
+        else:
+            popped_node = self.top
+            self.top = self.top.next
+            popped_node.next = None
+            return popped_node.data
+
+    def peek(self):
+        if self.top:
+            return self.top.data
+        else:
+            return None
+
+
+    def print_stack(self):
+        if self.top is None:
+            print("Stack is empty")
+        else:
+            current = self.top
+            print("Stack elements (top → bottom):")
+            while current:
+                print(current.data)
+                current = current.next
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -229,6 +271,152 @@ def alinkedlist():
         result = linkedlist.get_values()
 
     return render_template('linkedlist.html', result=result)
+
+
+@app.route('/works/infix_to_postfix', methods=['GET', 'POST'])
+def an_infix_to_postfix():
+    result = None
+    expression = ''
+    error = None
+
+    events = [
+
+    ]
+
+    PUSH = 'push'
+    POP = 'pop'
+    OUTPUT = 'output'
+    OPERATORS = 'operators'
+
+    def record_event(action, stack, value):
+        events.append({
+            'action': action,
+            'stack': stack,
+            'value': value
+        })
+
+    precedence = {
+        '+': 1,
+        '-': 1,
+        '*': 2,
+        '/': 2,
+        '^': 3
+    }
+
+    if request.method == 'POST':
+        expression = request.form.get('expression', '').strip()
+        button_click = request.form.get('button-click', '')
+
+        # Recognize operands, operators, and parentheses.
+        tokens = re.findall(
+            r'[A-Za-z]+|\d+(?:\.\d+)?|[()+\-*/^]',
+            expression
+        )
+
+        # Reject characters that the tokenizer did not recognize.
+        compact_expression = re.sub(r'\s+', '', expression)
+
+        if not expression:
+            error = 'Please enter an expression.'
+
+        elif ''.join(tokens) != compact_expression:
+            error = 'Expression contains unsupported characters.'
+
+        else:
+            # Create a fresh stack for this request.
+            ops_stack = Stack()
+            output = []
+
+            for token in tokens:
+                # 1. If token is an operand, send it to output.
+                if re.fullmatch(r'[A-Za-z]+|\d+(?:\.\d+)?', token):
+                    output.append(token)
+                    record_event(PUSH, OUTPUT, token)
+
+                # 2. If token is an opening parenthesis, push it.
+                elif token == '(':
+                    ops_stack.push(token)
+                    record_event(PUSH, OPERATORS, token)
+
+                # 3. If token is a closing parenthesis,
+                # pop operators until the opening parenthesis.
+                elif token == ')':
+                    while (
+                        ops_stack.peek() is not None
+                        and ops_stack.peek() != '('
+                    ):
+                        top = ops_stack.pop()
+                        
+                        record_event(POP, OPERATORS, top)
+                        
+                        output.append(top)
+
+                        record_event(PUSH, OUTPUT, top)
+
+                    if ops_stack.peek() == '(':
+                        top = ops_stack.pop()
+
+                        record_event(POP, OPERATORS, top)
+                    else:
+                        error = 'Mismatched parentheses.'
+                        break
+
+                # 4. If token is an operator, handle precedence.
+                elif token in precedence:
+                    while (
+                        ops_stack.peek() is not None
+                        and ops_stack.peek() != '('
+                        and (
+                            precedence[ops_stack.peek()] > precedence[token]
+                            or (
+                                precedence[ops_stack.peek()] == precedence[token]
+                                and token != '^'
+                            )
+                        )
+                    ):
+                        top = ops_stack.pop()
+
+                        record_event(POP, OPERATORS, top)
+
+                        output.append(top)
+
+                        record_event(PUSH, OUTPUT, top)
+
+                    ops_stack.push(token)
+
+                    record_event(PUSH, OPERATORS, token)
+
+                # Record the stack WITHOUT removing its nodes.
+                operators = []
+                current = ops_stack.top
+
+                while current:
+                    operators.append(current.data)
+                    current = current.next
+
+            # 5. Pop remaining operators.
+            if error is None:
+                while ops_stack.peek() is not None:
+                    operator = ops_stack.pop()
+                    record_event(POP, OPERATORS, operator)
+
+                    if operator == '(':
+                        error = 'Mismatched parentheses.'
+                        break
+
+                    output.append(operator)
+                    record_event(PUSH, OUTPUT, operator)
+
+            if error is None:
+                result = ' '.join(output)
+
+    return render_template(
+        'infix_to_postfix.html',
+        expression=expression,
+        result=result,
+        events=events,
+        error=error
+    )
 
 @app.route('/contact')
 def contact():
