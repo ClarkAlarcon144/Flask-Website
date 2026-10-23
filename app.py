@@ -1,181 +1,14 @@
 from flask import Flask, render_template, request
+
+from data_structures import Stack, Queue, Dequeue, LinkedList
+
 import re
 
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
-
-class LinkedList:
-    def __init__(self):
-        self.head = None
-        self.tail = None
-
-    def insert_at_beginning(self, data):
-        new_node = Node(data)
-        if self.head:
-            new_node.next = self.head
-            self.head = new_node
-        else:
-            self.head = new_node
-            self.tail = new_node
-
-    def insert_at_end(self, data):
-        new_node = Node(data)
-        if self.head:
-            self.tail.next = new_node
-            self.tail = new_node
-        else:
-            self.tail = new_node
-            self.head = new_node
-
-    def get_values(self):
-        values = []
-
-        current_node = self.head
-
-        while current_node:
-            values.append(current_node.data)
-            current_node = current_node.next
-
-        return values
-    
-    # TODO a: remove the FIRST node and return its data (not the Node).
-    # If the list is empty, return None.
-    def remove_beginning(self):
-        if self.head:
-            data = self.head.data
-            self.head = self.head.next
-
-            if self.head is None:
-                self.tail = None
-
-            return data
-        else:
-            return None
-
-    # TODO b: remove the LAST node and return its data (not the Node).
-    # If the list is empty, return None.
-   
-    def remove_at_end(self):
-        if self.head:
-            current_node = self.head
-
-            if self.head == self.tail:
-                data = self.tail.data
-                self.head = None
-                self.tail = None
-                return data
-
-            while current_node:
-                if current_node.next == self.tail:   
-                    data = self.tail.data
-                    current_node.next = None
-                    self.tail = current_node
-                    return data
-
-                else:
-                    current_node = current_node.next
-
-        else:
-            return None
-
-
-    # TODO c: remove the first node holding `data` and return its data.
-    # If no node holds `data`, return None and leave the list unchanged.
-    def remove_at(self, data):
-        if self.head:
-            current_node = self.head
-
-            if current_node.data == data:
-                return self.remove_beginning()
-
-            while current_node.next:
-                if current_node.next.data == data:  
-                    data = current_node.next.data
-                    current_node.next = current_node.next.next
-                    
-                    if current_node.next is None:
-                        self.tail = current_node
-
-                    return data
-
-                else:
-                    current_node = current_node.next
-
-            return None
-        
-        else:
-            return None
-
-    # TODO d: insert a new node holding `data` right after the first node
-    # holding `nodedata`.
-    # If no node holds `nodedata`, return None and leave the list unchanged.
-    def insert_after(self, nodedata, data):
-        if self.head:
-            current_node = self.head
-            
-            while current_node:
-                if current_node.data == nodedata:   
-                    new_node = Node(data)
-                    new_node.next = current_node.next
-                    current_node.next = new_node
-                    
-                    if new_node.next is None:
-                        self.tail = new_node
-                    
-                    return
-
-                else:
-                    current_node = current_node.next
-
-            return None
-        else:
-            return None
-
-class Node:
-    def __init__(self, data):
-        self.data = data
-        self.next = None
-
-class Stack:
-    def __init__(self):
-        self.top = None
-
-    def push(self, data):
-        new_node = Node(data)
-        if self.top:
-            new_node.next = self.top
-        self.top = new_node
-
-
-    def pop(self):
-        if self.top is None:
-            return None
-        else:
-            popped_node = self.top
-            self.top = self.top.next
-            popped_node.next = None
-            return popped_node.data
-
-    def peek(self):
-        if self.top:
-            return self.top.data
-        else:
-            return None
-
-
-    def print_stack(self):
-        if self.top is None:
-            print("Stack is empty")
-        else:
-            current = self.top
-            print("Stack elements (top → bottom):")
-            while current:
-                print(current.data)
-                current = current.next
-
 app = Flask(__name__)
+
+linkedlist = LinkedList()
+queue = Queue()
+dequeue = Dequeue()
 
 @app.route('/')
 def index():
@@ -234,7 +67,6 @@ def atriangle():
     return render_template('triangle.html', result=result)
 
 
-linkedlist = LinkedList()
 
 @app.route('/works/linkedlist', methods=['GET', 'POST'])
 def alinkedlist():
@@ -418,7 +250,41 @@ def an_infix_to_postfix():
         error=error
     )
 
+
+@app.route('/works/queue', methods=['GET', 'POST'])
+def aqueue():
+    action = request.form.get('action', '')
+    value = request.form.get('inputString', '')
+
+    if action == 'Enqueue':
+        queue.enqueue(value)
+    elif action == 'Dequeue':
+        queue.dequeue()
+
+    result = queue.get_values()
+
+    return render_template('queue.html', result=result)
+
+@app.route('/works/dequeue', methods=['GET', 'POST'])
+def adequeue():
+    action = request.form.get('action', '')
+    value = request.form.get('inputString', '')
+
+    if action == 'Insert Front':
+        dequeue.insert_front(value)
+    elif action == 'Insert Rear':
+        dequeue.insert_rear(value)
+    elif action == 'Remove Front':
+        dequeue.remove_front()
+    elif action == 'Remove Rear':
+        dequeue.remove_rear()
+    
+    result = dequeue.get_values()
+
+    return render_template('dequeue.html', result=result)
+
 @app.route('/contact')
+
 def contact():
     return render_template('contact.html')
 

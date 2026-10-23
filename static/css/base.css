@@ -140,3 +140,18 @@ a {
     transform: translateY(-4px);
     box-shadow: 0 5px 12px rgba(90, 60, 120, 0.15);
 }
+
+.node-box {
+    padding: 20px 30px;
+    background: #eee4ff;
+    border: 2px solid #8e6bbd;
+    border-radius: 10px;
+    font-weight: bold;
+    min-width: 100px;
+    text-align: center;
+}
+
+.arrow {
+    font-size: 30px;
+    color: #6f4b9b;
+}
