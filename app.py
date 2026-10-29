@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 
-from data_structures import Stack, Queue, Dequeue, LinkedList
+from data_structures import Stack, Queue, Deque, LinkedList, BinaryTree, BTNode
 
 import re
 
@@ -8,7 +8,8 @@ app = Flask(__name__)
 
 linkedlist = LinkedList()
 queue = Queue()
-dequeue = Dequeue()
+deque = Deque()
+binarytree = BinaryTree()
 
 @app.route('/')
 def index():
@@ -66,8 +67,6 @@ def atriangle():
 
     return render_template('triangle.html', result=result)
 
-
-
 @app.route('/works/linkedlist', methods=['GET', 'POST'])
 def alinkedlist():
 
@@ -103,7 +102,6 @@ def alinkedlist():
         result = linkedlist.get_values()
 
     return render_template('linkedlist.html', result=result)
-
 
 @app.route('/works/infix_to_postfix', methods=['GET', 'POST'])
 def an_infix_to_postfix():
@@ -250,7 +248,6 @@ def an_infix_to_postfix():
         error=error
     )
 
-
 @app.route('/works/queue', methods=['GET', 'POST'])
 def aqueue():
     action = request.form.get('action', '')
@@ -265,26 +262,89 @@ def aqueue():
 
     return render_template('queue.html', result=result)
 
-@app.route('/works/dequeue', methods=['GET', 'POST'])
-def adequeue():
+@app.route('/works/deque', methods=['GET', 'POST'])
+def adeque():
     action = request.form.get('action', '')
     value = request.form.get('inputString', '')
 
     if action == 'Insert Front':
-        dequeue.insert_front(value)
+        deque.insert_front(value)
     elif action == 'Insert Rear':
-        dequeue.insert_rear(value)
+        deque.insert_rear(value)
     elif action == 'Remove Front':
-        dequeue.remove_front()
+        deque.remove_front()
     elif action == 'Remove Rear':
-        dequeue.remove_rear()
+        deque.remove_rear()
     
-    result = dequeue.get_values()
+    result = deque.get_values()
 
-    return render_template('dequeue.html', result=result)
+    return render_template('deque.html', result=result)
+
+@app.route('/works/binary_tree', methods=['GET', 'POST'])
+def abinarytree():
+    result = None
+    message = ""
+
+    if request.method == 'POST':
+        action = request.form.get('action', '')
+        value = request.form.get('inputString', '').strip()
+        parent_value = request.form.get('parentValue', '').strip()
+
+        if action == 'Insert Root':
+            if binarytree.root is None and value:
+                binarytree.root = BTNode(value)
+                message = f"Root {value} inserted."
+            else:
+                message = "Root already exists or value is empty."
+
+        elif action in ('Insert Left', 'Insert Right'):
+            parent = binarytree.search(
+                binarytree.root, parent_value
+            )
+
+            if not value or not parent_value:
+                message = "Enter both node and parent values."
+            elif parent is None:
+                message = "Parent node not found."
+            elif action == 'Insert Left':
+                binarytree.insert_left(parent, value)
+                message = f"Inserted {value} to the left of {parent_value}."
+            else:
+                binarytree.insert_right(parent, value)
+                message = f"Inserted {value} to the right of {parent_value}."
+
+        elif action == 'Delete Node':
+            if value:
+                binarytree.root = binarytree.delete_node(
+                    binarytree.root, value
+                )
+                message = f"Deletion attempted for {value}."
+
+        elif action == 'Preorder Traversal':
+            result = binarytree.preorder_traversal(
+                binarytree.root, ''
+            ).split()
+
+        elif action == 'Inorder Traversal':
+            result = binarytree.inorder_traversal(
+                binarytree.root, ''
+            ).split()
+
+        elif action == 'Postorder Traversal':
+            result = binarytree.postorder_traversal(
+                binarytree.root, ''
+            ).split()
+
+    tree_data = binarytree.get_tree_data(binarytree.root)
+
+    return render_template(
+        'binary_tree.html',
+        result=result,
+        message=message,
+        tree_data=tree_data
+    )
 
 @app.route('/contact')
-
 def contact():
     return render_template('contact.html')
 

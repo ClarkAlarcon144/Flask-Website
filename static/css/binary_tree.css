@@ -1,0 +1,33 @@
+.queue-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.controls {
+    flex: 0 0 280px;
+}
+
+.tree-display {
+    flex: 1;
+    overflow: auto;
+}
+
+.tree-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tree-children {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.tree-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/binary_tree.css') }}">
+{% endblock %}
+
+{% block content %}
+
+    <h2>Binary Tree</h2>
+
+    <div class="queue-layout">
+
+        <div class="controls">
+            <form action="/works/binary_tree" method="post">
+
+                <input type="text" name="inputString" placeholder="Node value">
+
+                <input type="text" name="parentValue" placeholder="Parent node value">
+
+                <button type="submit" name="action" value="Insert Root">
+                    Insert Root
+                </button>
+
+                <button type="submit" name="action" value="Insert Left">
+                    Insert Left
+                </button>
+
+                <button type="submit" name="action" value="Insert Right">
+                    Insert Right
+                </button>
+
+                <button type="submit" name="action" value="Delete Node">
+                    Delete Node
+                </button>
+
+                <button type="submit" name="action" value="Preorder Traversal">
+                    Preorder
+                </button>
+
+                <button type="submit" name="action" value="Inorder Traversal">
+                    Inorder
+                </button>
+
+                <button type="submit" name="action" value="Postorder Traversal">
+                    Postorder
+                </button>
+
+            </form>
+
+            {% if message %}
+                <p>{{ message }}</p>
+            {% endif %}
+
+            {% if result is not none %}
+                <p>Traversal: {{ result | join(' → ') }}</p>
+            {% endif %}
+        </div>
+
+        <div class="tree-display">
+            {% if tree_data %}
+                {% macro render_tree(node) %}
+                    <div class="tree-node">
+                        <div class="node-box">{{ node.value }}</div>
+
+                        {% if node.left or node.right %}
+                            <div class="tree-children">
+                                {% if node.left %}
+                                    <div class="tree-child">
+                                        <div class="arrow">↙</div>
+                                        {{ render_tree(node.left) }}
+                                    </div>
+                                {% else %}
+                                    <div class="tree-child"></div>
+                                {% endif %}
+
+                                {% if node.right %}
+                                    <div class="tree-child">
+                                        <div class="arrow">↘</div>
+                                        {{ render_tree(node.right) }}
+                                    </div>
+                                {% else %}
+                                    <div class="tree-child"></div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endmacro %}
+
+                {{ render_tree(tree_data) }}
+            {% else %}
+                <p>The tree is empty.</p>
+            {% endif %}
+        </div>
+
+    </div>
+
+{% endblock %}
