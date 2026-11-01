@@ -4,6 +4,114 @@ from data_structures import Stack, Queue, Deque, LinkedList, BinaryTree, BTNode
 
 import re
 
+def bubble_sort(arr):
+
+    arr = arr.copy()
+    n = len(arr)
+
+    for i in range(n):
+
+        for j in range(0, n - i - 1):
+
+            if arr[j] > arr[j + 1]:
+
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+    return arr
+
+
+def selection_sort(arr):
+
+    arr = arr.copy()
+    n = len(arr)
+
+    for i in range(n):
+
+        min_index = i
+
+        for j in range(i + 1, n):
+
+            if arr[j] < arr[min_index]:
+                min_index = j
+
+        arr[i], arr[min_index] = arr[min_index], arr[i]
+
+    return arr
+
+
+def insertion_sort(arr):
+
+    arr = arr.copy()
+
+    for i in range(1, len(arr)):
+
+        key = arr[i]
+        j = i - 1
+
+        while j >= 0 and arr[j] > key:
+
+            arr[j + 1] = arr[j]
+            j -= 1
+
+        arr[j + 1] = key
+
+    return arr
+
+
+def merge_sort(arr):
+
+    if len(arr) <= 1:
+        return arr.copy()
+
+    mid = len(arr) // 2
+
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+
+    result = []
+
+    i = 0
+    j = 0
+
+    while i < len(left) and j < len(right):
+
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+
+        else:
+            result.append(right[j])
+            j += 1
+
+    result.extend(left[i:])
+    result.extend(right[i:])
+
+    return result
+
+
+def quick_sort(arr):
+
+    arr = arr.copy()
+
+    if len(arr) <= 1:
+        return arr
+
+    pivot = arr[-1]
+
+    left = []
+    right = []
+
+    for value in arr[:-1]:
+
+        if value <= pivot:
+            left.append(value)
+
+        else:
+            right.append(value)
+
+    return quick_sort(left) + [pivot] + quick_sort(right)
+
+
 app = Flask(__name__)
 
 linkedlist = LinkedList()
@@ -348,35 +456,40 @@ def abinarytree():
 @app.route('/works/sorting', methods=['GET', 'POST'])
 def sorting():
 
-    result = []
+    numbers = []
+    selected_algorithm = ''
+    error = None
 
     if request.method == 'POST':
 
         input_string = request.form.get('inputString', '')
-        action = request.form.get('action')
+        selected_algorithm = request.form.get('action', '')
 
         try:
-            numbers = [int(x.strip()) for x in input_string.split(',')]
+            numbers = [
+                int(x.strip())
+                for x in input_string.split(',')
+                if x.strip()
+            ]
 
-            if action == 'bubble':
-                result = bubble_sort(numbers)
+            if not numbers:
+                error = "Please enter some numbers."
 
-            elif action == 'selection':
-                result = selection_sort(numbers)
-
-            elif action == 'insertion':
-                result = insertion_sort(numbers)
-
-            elif action == 'merge':
-                result = merge_sort(numbers)
-
-            elif action == 'quick':
-                result = quick_sort(numbers)
+            elif selected_algorithm not in [
+                'bubble', 'selection', 'insertion', 'merge', 'quick'
+            ]:
+                error = "Please select a sorting algorithm."
 
         except ValueError:
-            result = []
+            error = "Please enter valid numbers separated by commas."
+            numbers = []
 
-    return render_template('sorting.html', result=result)
+    return render_template(
+        'sorting.html',
+        numbers=numbers,
+        selected_algorithm=selected_algorithm,
+        error=error
+    )
 
 
 @app.route('/contact')

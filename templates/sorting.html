@@ -5,72 +5,73 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sorting.css') }}">
 {% endblock %}
 
-
 {% block content %}
 
-    <h2>Sorting</h2>
+<h2>Sorting Visualizer</h2>
 
-    <div class="sorting-layout">
+<div class="sorting-layout">
 
-        <div class="controls">
+    <div class="controls">
 
-            <form action="/works/sorting" method="post">
+        <form action="/works/sorting" method="POST">
 
-                <input
-                    type="text"
-                    name="inputString"
-                    placeholder="Enter numbers (e.g. 5, 2, 8, 1, 9)"
-                >
+            <input
+                type="text"
+                name="inputString"
+                placeholder="Enter numbers: 5, 2, 8, 1, 9"
+                value="{{ request.form.get('inputString', '') }}"
+                required
+            >
 
-                <div class="sorting-buttons">
+            <div class="sorting-buttons">
 
-                    <button type="submit" name="action" value="bubble">
-                        Bubble Sort
-                    </button>
+                <button name="action" value="bubble">
+                    Bubble Sort
+                </button>
 
-                    <button type="submit" name="action" value="selection">
-                        Selection Sort
-                    </button>
+                <button name="action" value="selection">
+                    Selection Sort
+                </button>
 
-                    <button type="submit" name="action" value="insertion">
-                        Insertion Sort
-                    </button>
+                <button name="action" value="insertion">
+                    Insertion Sort
+                </button>
 
-                    <button type="submit" name="action" value="merge">
-                        Merge Sort
-                    </button>
+                <button name="action" value="merge">
+                    Merge Sort
+                </button>
 
-                    <button type="submit" name="action" value="quick">
-                        Quick Sort
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-
-
-        {% if result %}
-
-            <div class="sorting">
-
-                {% for value in result %}
-
-                    <div class="node-box">
-                        {{ value }}
-                    </div>
-
-                    {% if not loop.last %}
-                        <div class="arrow">→</div>
-                    {% endif %}
-
-                {% endfor %}
+                <button name="action" value="quick">
+                    Quick Sort
+                </button>
 
             </div>
 
-        {% endif %}
+        </form>
 
     </div>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <div class="visualizer">
+
+        <h3 id="algorithm-name"></h3>
+
+        <div id="bars" class="bars"></div>
+
+        <p id="status">Enter numbers and select an algorithm.</p>
+
+    </div>
+
+</div>
+
+<script>
+    const numbers = {{ numbers | tojson }};
+    const algorithm = {{ selected_algorithm | tojson }};
+</script>
+
+<script src="{{ url_for('static', filename='js/sorting.js') }}"></script>
 
 {% endblock %}
