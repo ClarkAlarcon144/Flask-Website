@@ -343,6 +343,41 @@ def abinarytree():
         message=message,
         tree_data=tree_data
     )
+	
+
+@app.route('/works/sorting', methods=['GET', 'POST'])
+def sorting():
+
+    result = []
+
+    if request.method == 'POST':
+
+        input_string = request.form.get('inputString', '')
+        action = request.form.get('action')
+
+        try:
+            numbers = [int(x.strip()) for x in input_string.split(',')]
+
+            if action == 'bubble':
+                result = bubble_sort(numbers)
+
+            elif action == 'selection':
+                result = selection_sort(numbers)
+
+            elif action == 'insertion':
+                result = insertion_sort(numbers)
+
+            elif action == 'merge':
+                result = merge_sort(numbers)
+
+            elif action == 'quick':
+                result = quick_sort(numbers)
+
+        except ValueError:
+            result = []
+
+    return render_template('sorting.html', result=result)
+
 
 @app.route('/contact')
 def contact():
